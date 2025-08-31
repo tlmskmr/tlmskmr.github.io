@@ -62,13 +62,13 @@
     <h2 id="kabu">おおきなかぶ（絵本スライダー）</h2>
     <div class="carousel-kabu">
       <div class="slick-kabu">
-        <div class="kabu-slide" style="background-color:#f00;">
+        <div class="kabu-slide-text" style="background-color:#f00;">
           <p>おじいさんが かぶを うえました。</p>
         </div>
-        <div class="kabu-slide" style="background-color:#ff0;">
+        <div class="kabu-slide-text" style="background-color:#ff0;">
           <p>かぶが すくすく そだちました。</p>
         </div>
-        <div class="kabu-slide" style="background-color:#0ff;">
+        <div class="kabu-slide-text" style="background-color:#0ff;">
           <p>おじいさんが かぶを ぬこうと しました。</p>
         </div>
         <!-- 必要に応じて追加 -->
@@ -103,7 +103,32 @@
         arrows: true,
         fade: false,
     });
-});
+
+  function animateVerticalText($el) {
+    const text = $el.text();
+    $el.empty();
+
+    [...text].forEach((char, i) => {
+      const span = $('<span>').text(char).css('animation-delay', `${i * 0.1}s`);
+      $el.append(span);
+    });
+  }
+
+  // 初期表示
+  $(document).ready(() => {
+    $('.kabu-slide-text').each(function(){
+      animateVerticalText($(this));
+    });
+  });
+
+  // Slickスライド切り替え時も
+  $('.slick-kabu').on('afterChange', function(event, slick, currentSlide){
+    const $targetText = $('.slick-kabu .slick-slide[data-slick-index="' + currentSlide + '"] .kabu-slide-text');
+     $targetText.each(function() {
+      $(this).text($(this).text());
+      animateVerticalText($(this));
+   });
+  });
 
   </script>
 </body>
