@@ -95,30 +95,51 @@
         fade: false,
       });
   
-      // アニメーション処理（縦書き1文字ずつ表示）
+      // animate関数：縦書き＆1文字ずつ表示
       function animateVerticalText($el) {
-        const text = $el.text();
+        const text = $el.data('original-text'); // 元のテキスト
         $el.empty();
+        $el.css({
+          'writing-mode': 'vertical-rl',
+          'text-orientation': 'mixed',
+          'font-size': '24px',
+          'line-height': '1.8',
+          'display': 'inline-block',
+        });
+  
         [...text].forEach((char, i) => {
-          const span = $('<span>').text(char).css('animation-delay', `${i * 0.1}s`);
+          const span = $('<span>').text(char).css({
+            'opacity': 0,
+            'display': 'inline-block',
+            'animation': 'fadeInChar 0.5s forwards',
+            'animation-delay': `${i * 0.1}s`
+          });
           $el.append(span);
         });
       }
   
       // 初期表示のスライドだけ処理
-      const $initialText = $('.slick-kabu .slick-slide[data-slick-index="0"]').find('.kabu-slide-text');
-      animateVerticalText($initialText);
+      const $initial = $('.slick-kabu .slick-slide[data-slick-index="0"] .kabu-slide-text');
+      $initial.each(function () {
+        const original = $(this).text();
+        $(this).data('original-text', original);
+        animateVerticalText($(this));
+      });
   
-      // スライド切り替え時
-      $('.slick-kabu').on('afterChange', function(event, slick, currentSlide){
-        const $targetText = $('.slick-kabu .slick-slide[data-slick-index="' + currentSlide + '"]').find('.kabu-slide-text');
+      // スライド切り替え時にそのスライドだけ実行
+      $('.slick-kabu').on('afterChange', function (event, slick, currentSlide) {
+        const $target = $('.slick-kabu .slick-slide[data-slick-index="' + currentSlide + '"] .kabu-slide-text');
   
-        // すでに分解されていたらスキップ（再描画防止）
-        if ($targetText.find('span').length === 0) {
-          animateVerticalText($targetText);
-        }
+        $target.each(function () {
+          const $el = $(this);
+          if (!$el.data('original-text')) {
+            $el.data('original-text', $el.text()); // 初回だけ保存
+          }
+          animateVerticalText($el);
+        });
       });
     });
-  </script> 
+  </script>
+ 
 </body>
 </html>
