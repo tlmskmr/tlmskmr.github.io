@@ -1,35 +1,68 @@
 <!doctype html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>Slider Demo</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize-css@2.3.1/normalize.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
   <link rel="stylesheet" href="./assets/common.css">
   <style>
     .slick-prev:before,
     .slick-next:before {
-      color: rgba(0,0,0,0.5);
+      color: rgba(0, 0, 0, 0.5);
     }
+
     .slick-next {
       right: 10px;
     }
+
     .slick-prev {
       left: 10px;
       z-index: 1;
     }
+
     .slick-dots {
       bottom: 10px;
     }
   </style>
 </head>
+
 <body>
   <div class="wrapper">
     <h1>Slider Demo Page</h1>
-    <p>これは slider-demo フォルダに置いたページです。</p>
+    <h2 id="kabu">2025/8/31 おおきなかぶ（絵本スライダー）</h2>
+    <div class="carousel-kabu">
+      <div class="slick-kabu">
+        <div class="kabu-slide-text" style="background-color:#fdd;">
+          <p class="kabu-text">おじいさんが かぶを うえました。</p>
+        </div>
+        <div class="kabu-slide-text" style="background-color:#dfd;">
+          <p class="kabu-text">かぶが すくすく そだちました。</p>
+        </div>
+        <div class="kabu-slide-text" style="background-color:#ddf;">
+          <p class="kabu-text">おじいさんが かぶを ぬこうと しました。</p>
+        </div>
+        <div class="kabu-slide-text" style="background-color:#ffd;">
+          <p class="kabu-text">うんとこしょ、どっこいしょ。</p>
+        </div>
+        <div class="kabu-slide-text" style="background-color:#dff;">
+          <p class="kabu-text">それでも かぶは ぬけません。</p>
+        </div>
+        <div class="kabu-slide-text" style="background-color:#fdf;">
+          <p class="kabu-text">おばあさんが てつだいに きました。</p>
+        </div>
+        <div class="kabu-slide-text" style="background-color:#eef;">
+          <p class="kabu-text">みんなで うんとこしょ、どっこいしょ！</p>
+        </div>
+        <div class="kabu-slide-text" style="background-color:#ffc;">
+          <p class="kabu-text">やっと かぶが ぬけました！</p>
+        </div>
+      </div>
+    </div>
+    <h2>2025/8/10 これは slider-demo フォルダに置いたページです。</h2>
     <div class="sample-slick">
       <div class="slick carousel">
         <div>
@@ -58,27 +91,10 @@
         </div>
       </div>
     </div>
-
-    <h2 id="kabu">おおきなかぶ（絵本スライダー）</h2>
-    <div class="carousel-kabu">
-      <div class="slick-kabu">
-        <div class="kabu-slide-text" style="background-color:#f00;">
-          <p>おじいさんが かぶを うえました。</p>
-        </div>
-        <div class="kabu-slide-text" style="background-color:#ff0;">
-          <p>かぶが すくすく そだちました。</p>
-        </div>
-        <div class="kabu-slide-text" style="background-color:#0ff;">
-          <p>おじいさんが かぶを ぬこうと しました。</p>
-        </div>
-        <!-- 必要に応じて追加 -->
-      </div>
-    </div>
-    
-
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
   <script type="text/javascript">
@@ -86,19 +102,42 @@
       // 通常スライダー
       $(".sample-slick .slick").slick({ infinite: true, dots: true });
       $(".sample-slick-fade .slick").slick({ infinite: true, dots: true, fade: true });
-  
-      // 絵本スライダー
+
+      // 絵本スライダーの初期化
+      $(".slick-kabu").on("init", function () {
+        // 最初にすべてのテキストを非表示にして、元テキストだけ保存
+        $(".kabu-text").each(function () {
+          const original = $(this).text();
+          $(this).data("original-text", original).empty(); // 初期表示は空
+        });
+
+        // 初期スライド（index 0）にだけアニメーション実行
+        const $initial = $('.slick-kabu .slick-slide[data-slick-index="0"] .kabu-text');
+        $initial.each(function () {
+          animateVerticalText($(this));
+        });
+      });
+
       $(".slick-kabu").slick({
         infinite: false,
         dots: true,
         arrows: true,
         fade: false,
       });
-  
-      // animate関数：縦書き＆1文字ずつ表示
+
+      // スライド切り替え後の処理
+      $(".slick-kabu").on("afterChange", function (event, slick, currentSlide) {
+        const $target = $('.slick-kabu .slick-slide[data-slick-index="' + currentSlide + '"] .kabu-text');
+        $target.each(function () {
+          if ($(this).children().length === 0) {
+            animateVerticalText($(this));
+          }
+        });
+      });
+
+      // アニメーション関数（縦書き＋1文字ずつ表示）
       function animateVerticalText($el) {
-        const text = $el.data('original-text'); // 元のテキスト
-        $el.empty();
+        const text = $el.data("original-text");
         $el.css({
           'writing-mode': 'vertical-rl',
           'text-orientation': 'mixed',
@@ -106,40 +145,42 @@
           'line-height': '1.8',
           'display': 'inline-block',
         });
-  
+        $el.empty();
         [...text].forEach((char, i) => {
-          const span = $('<span>').text(char).css({
-            'opacity': 0,
-            'display': 'inline-block',
-            'animation': 'fadeInChar 0.5s forwards',
-            'animation-delay': `${i * 0.1}s`
+          const span = $("<span>").text(char).css({
+            opacity: 0,
+            display: "inline-block",
+            animation: "fadeInChar 0.5s forwards",
+            animationDelay: `${i * 0.1}s`,
           });
           $el.append(span);
         });
       }
-  
-      // 初期表示のスライドだけ処理
-      const $initial = $('.slick-kabu .slick-slide[data-slick-index="0"] .kabu-slide-text');
-      $initial.each(function () {
-        const original = $(this).text();
-        $(this).data('original-text', original);
-        animateVerticalText($(this));
+    });
+    function unifyKabuSlideHeightsByCharCount() {
+      let maxCharCount = 0;
+
+      // 各スライドの文字数を調べて最大を記録
+      $('.kabu-slide-text').each(function () {
+        const charCount = $(this).text().trim().length;
+        if (charCount > maxCharCount) {
+          maxCharCount = charCount;
+        }
       });
-  
-      // スライド切り替え時にそのスライドだけ実行
-      $('.slick-kabu').on('afterChange', function (event, slick, currentSlide) {
-        const $target = $('.slick-kabu .slick-slide[data-slick-index="' + currentSlide + '"] .kabu-slide-text');
-  
-        $target.each(function () {
-          const $el = $(this);
-          if (!$el.data('original-text')) {
-            $el.data('original-text', $el.text()); // 初回だけ保存
-          }
-          animateVerticalText($el);
-        });
-      });
+
+      // 1文字あたりの高さ
+      const charHeight = 15 * 1.8; // 行間込みの1文字の高さ
+      const padding = 40; // パディングなど考慮
+
+      const targetHeight = Math.ceil(maxCharCount * charHeight + padding);
+
+      // 全スライドにその高さを指定
+      $('.kabu-slide-text').css('height', targetHeight + 'px');
+    }
+
+    $(window).on('load resize', function () {
+      unifyKabuSlideHeightsByCharCount();
     });
   </script>
- 
 </body>
 </html>
