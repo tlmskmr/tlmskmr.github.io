@@ -83,19 +83,11 @@
 
   <script type="text/javascript">
     $(document).ready(() => {
-      // Slick初期化（他のセクション）
-      $(".sample-slick .slick").slick({
-        infinite: true,
-        dots: true,
-      });
+      // 通常スライダー
+      $(".sample-slick .slick").slick({ infinite: true, dots: true });
+      $(".sample-slick-fade .slick").slick({ infinite: true, dots: true, fade: true });
   
-      $(".sample-slick-fade .slick").slick({
-        infinite: true,
-        dots: true,
-        fade: true,
-      });
-  
-      // おおきなかぶスライダー初期化
+      // 絵本スライダー
       $(".slick-kabu").slick({
         infinite: false,
         dots: true,
@@ -103,31 +95,30 @@
         fade: false,
       });
   
-      // 縦書き1文字ずつアニメーション関数
+      // アニメーション処理（縦書き1文字ずつ表示）
       function animateVerticalText($el) {
         const text = $el.text();
         $el.empty();
-  
         [...text].forEach((char, i) => {
           const span = $('<span>').text(char).css('animation-delay', `${i * 0.1}s`);
           $el.append(span);
         });
       }
   
-      // 初期表示時のアニメーション
-      $('.kabu-slide-text').each(function(){
-        animateVerticalText($(this));
-      });
+      // 初期表示のスライドだけ処理
+      const $initialText = $('.slick-kabu .slick-slide[data-slick-index="0"]').find('.kabu-slide-text');
+      animateVerticalText($initialText);
   
-      // スライド切り替え後のアニメーション
+      // スライド切り替え時
       $('.slick-kabu').on('afterChange', function(event, slick, currentSlide){
-        const $targetText = $('.slick-kabu .slick-slide[data-slick-index="' + currentSlide + '"] .kabu-slide-text');
-        $targetText.each(function() {
-          $(this).text($(this).text()); // 元に戻して
-          animateVerticalText($(this)); // 再度アニメーション
-        });
+        const $targetText = $('.slick-kabu .slick-slide[data-slick-index="' + currentSlide + '"]').find('.kabu-slide-text');
+  
+        // すでに分解されていたらスキップ（再描画防止）
+        if ($targetText.find('span').length === 0) {
+          animateVerticalText($targetText);
+        }
       });
     });
-  </script>
+  </script> 
 </body>
 </html>
