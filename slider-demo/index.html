@@ -83,53 +83,51 @@
 
   <script type="text/javascript">
     $(document).ready(() => {
+      // Slick初期化（他のセクション）
       $(".sample-slick .slick").slick({
-        infinite: true, // ループの有効化
-        dots: true, // ドットインジケーターの表示
+        infinite: true,
+        dots: true,
       });
-    });
-    $(document).ready(() => {
+  
       $(".sample-slick-fade .slick").slick({
-        infinite: true, // ループの有効化
-        dots: true, // ドットインジケーターの表示
-        fade: true, // フェードアニメーションを有効化
+        infinite: true,
+        dots: true,
+        fade: true,
       });
-    });
-
-    $(document).ready(() => {
-       $(".slick-kabu").slick({
+  
+      // おおきなかぶスライダー初期化
+      $(".slick-kabu").slick({
         infinite: false,
         dots: true,
         arrows: true,
         fade: false,
+      });
+  
+      // 縦書き1文字ずつアニメーション関数
+      function animateVerticalText($el) {
+        const text = $el.text();
+        $el.empty();
+  
+        [...text].forEach((char, i) => {
+          const span = $('<span>').text(char).css('animation-delay', `${i * 0.1}s`);
+          $el.append(span);
+        });
+      }
+  
+      // 初期表示時のアニメーション
+      $('.kabu-slide-text').each(function(){
+        animateVerticalText($(this));
+      });
+  
+      // スライド切り替え後のアニメーション
+      $('.slick-kabu').on('afterChange', function(event, slick, currentSlide){
+        const $targetText = $('.slick-kabu .slick-slide[data-slick-index="' + currentSlide + '"] .kabu-slide-text');
+        $targetText.each(function() {
+          $(this).text($(this).text()); // 元に戻して
+          animateVerticalText($(this)); // 再度アニメーション
+        });
+      });
     });
-
-  function animateVerticalText($el) {
-    const text = $el.text();
-    $el.empty();
-
-    [...text].forEach((char, i) => {
-      const span = $('<span>').text(char).css('animation-delay', `${i * 0.1}s`);
-      $el.append(span);
-    });
-  }
-
-  // 初期表示
-  $(document).ready(() => {
-    $('.kabu-slide-text').each(function(){
-      animateVerticalText($(this));
-    });
-  });
-
-  // Slickスライド切り替え時も
-  $('.slick-kabu').on('afterChange', function(event, slick, currentSlide){
-    const $targetText = $('.slick-kabu .slick-slide[data-slick-index="' + currentSlide + '"] .kabu-slide-text');
-     $targetText.each(function() {
-      $(this).text($(this).text());
-      animateVerticalText($(this));
-   });
-  });
-
   </script>
 </body>
 </html>
