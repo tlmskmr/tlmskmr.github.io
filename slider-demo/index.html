@@ -58,6 +58,24 @@
         </div>
       </div>
     </div>
+
+    <h2 id="kabu">おおきなかぶ（絵本スライダー）</h2>
+    <div class="carousel-kabu">
+      <div class="slick-kabu">
+        <div class="kabu-slide" style="background-color:#f00;">
+          <p>おじいさんが かぶを うえました。</p>
+        </div>
+        <div class="kabu-slide" style="background-color:#ff0;">
+          <p>かぶが すくすく そだちました。</p>
+        </div>
+        <div class="kabu-slide" style="background-color:#0ff;">
+          <p>おじいさんが かぶを ぬこうと しました。</p>
+        </div>
+        <!-- 必要に応じて追加 -->
+      </div>
+    </div>
+    
+
   </div>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -77,6 +95,16 @@
         fade: true, // フェードアニメーションを有効化
       });
     });
+
+    $(document).ready(() => {
+       $(".slick-kabu").slick({
+        infinite: false,
+        dots: true,
+        arrows: true,
+        fade: false,
+    });
+});
+
   </script>
 </body>
 </html>
